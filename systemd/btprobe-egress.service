@@ -1,0 +1,12 @@
+[Unit]
+Description=bt-probe-agent 出站防火墙（仅允许中国大陆 IP）
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/btprobe-egress.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

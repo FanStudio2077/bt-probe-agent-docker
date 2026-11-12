@@ -1,0 +1,21 @@
+services:
+  bt-probe-agent:
+    image: fanstudio2077/bt-probe-agent:latest
+    build:
+      context: .
+    container_name: bt-probe-agent
+    restart: unless-stopped
+    cap_add:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - bt-probe-agent-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  bt-probe-agent-data:

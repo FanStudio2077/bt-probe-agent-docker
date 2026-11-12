@@ -1,0 +1,10 @@
+[Unit]
+Description=定时刷新 bt-probe-agent 出站防火墙（中国大陆 IP 列表）
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=10min
+Unit=btprobe-egress.service
+
+[Install]
+WantedBy=timers.target
