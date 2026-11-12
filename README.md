@@ -214,6 +214,18 @@ docker exec bt-probe-agent curl -s -o /dev/null -w '%{http_code}\n' -m 8 https:/
 
 见上文「日常运维」，用 `docker exec ... public-activate` 重新生成。
 
+**Q: 容器内 DNS 偶尔解析失败（`nslookup` 超时）？**
+
+部分宿主机（尤其装了代理/软路由的机器）上 Docker 内嵌 DNS 到上游的 UDP 查询会间歇性超时，dockerd 日志可见 `[resolver] failed to query external DNS server`。给容器显式指定国内 DNS 即可绕过内嵌 DNS 的上游解析：
+
+```bash
+docker run ... --dns 223.5.5.5 --dns 119.29.29.29 ...
+```
+
+**Q: 宿主机装了 Clash/V2Ray 等代理，容器会不会走代理？**
+
+不会。容器不会继承宿主机的代理环境变量；若宿主机还配置了 Docker 守护进程代理（`/etc/systemd/system/docker.service.d/proxy.conf`），那只作用于**镜像拉取**，不影响容器内进程。配合「仅中国大陆 IP」出站规则，容器也访问不到宿主机上的代理端口（如 `127.0.0.1:7890` / `192.168.x.x:7890`）。
+
 **Q: 容器一直重启？**
 
 `docker logs bt-probe-agent` 查看原因。常见是首次启动时无法访问 `t.bt.cn`（网络/DNS），可以先确认容器内可访问外网。
